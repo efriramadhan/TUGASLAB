@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Efri Ramadhan",
+    "email": "efri.ramadhan@example.com",
+    "photo_url": "https://randomuser.me/api/portraits/men/1.jpg",
+    "nim": "123456789"
+  },
+  {
+    "name": "Ucup",
+    "email": "ucup@example.com",
+    "photo_url": "https://randomuser.me/api/portraits/men/2.jpg",
+    "nim": "123456789"
+  },
+  {
+    "name": "Asep",
+    "email": "asep@example.com",
+    "photo_url": "https://randomuser.me/api/portraits/men/3.jpg",
+    "nim": "123456789"
+  },
+  {
+    "name": "Soimah",
+    "email": "soimah@example.com",
+    "photo_url": "https://randomuser.me/api/portraits/women/1.jpg",
+    "nim": "123456789"
+  },
+  {
+    "name": "Purina",
+    "email": "purina@example.com",
+    "photo_url": "https://randomuser.me/api/portraits/women/2.jpg",
+    "nim": "123456789"
+  }
+]
