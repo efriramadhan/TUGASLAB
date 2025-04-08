@@ -12,10 +12,10 @@ export default function SplashScreen({ navigation }: any) {
   return (
     <View style={styles.splashContainer}>
       <Image
-        source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg' }}
+        source={require('../assets/WhatsApp.png')}
         style={styles.splashLogo}
       />
-      <Text style={styles.splashText}>WhatsApp Clone</Text>
+      <Text style={styles.splashText}>WhatsApp</Text>
     </View>
   );
 }

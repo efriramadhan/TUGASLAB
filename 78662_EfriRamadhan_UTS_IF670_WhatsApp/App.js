@@ -21,24 +21,28 @@ const Tab = createBottomTabNavigator();
 function MainTabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
+    screenOptions={({ route }) => ({
+    tabBarIcon: ({ color, size }) => {
+      let iconName;
 
-          if (route.name === 'Chats') iconName = 'chatbubble-ellipses';
-          else if (route.name === 'Status') iconName = 'ellipse';
-          else if (route.name === 'Calls') iconName = 'call';
+      if (route.name === 'Chats') iconName = 'chatbubble-ellipses';
+      else if (route.name === 'Status') iconName = 'ellipse';
+      else if (route.name === 'Calls') iconName = 'call';
+      else if (route.name === 'Contacts') iconName = 'people';
+      else if (route.name === 'Profile') iconName = 'person-circle';
 
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: '#128C7E',
-        tabBarInactiveTintColor: 'gray',
-      })}
-    >
-      <Tab.Screen name="Chats" component={ChatListScreen} />
-      <Tab.Screen name="Status" component={StatusScreen} />
-      <Tab.Screen name="Calls" component={CallScreen} />
-    </Tab.Navigator>
+      return <Ionicons name={iconName} size={size} color={color} />;
+    },
+    tabBarActiveTintColor: '#128C7E',
+    tabBarInactiveTintColor: 'gray',
+  })}
+>
+  <Tab.Screen name="Chats" component={ChatListScreen} />
+  <Tab.Screen name="Status" component={StatusScreen} />
+  <Tab.Screen name="Calls" component={CallScreen} />
+  <Tab.Screen name="Contacts" component={ContactScreen} />
+  <Tab.Screen name="Profile" component={ProfileScreen} />
+</Tab.Navigator>
   );
 }
 
