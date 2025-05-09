@@ -20,7 +20,7 @@ import * as Sharing from 'expo-sharing';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { styles } from './styles';
+import { styles } from './style';
 
 import { ActionButton, CurrentLocationCard, LocationHistoryCard } from './components';
 
@@ -252,8 +252,8 @@ export default function App() {
       const fileName = `GeoLocation_${currentDate}.txt`;
 
       let fileContent = "=== DATA GEOLOKASI ===\n\n";
-      fileContent += `Nama: Axel Reginald Wiranto\n`;
-      fileContent += `NIM: 00000078456\n`;
+      fileContent += `Nama: Efri Ramadhan\n`;
+      fileContent += `NIM: 00000078662\n`;
       fileContent += `Waktu Pengambilan: ${new Date().toLocaleString()}\n\n`;
 
       fileContent += "=== RIWAYAT LOKASI ===\n\n";
@@ -618,7 +618,7 @@ export default function App() {
               resizeMode="contain"
             />
             <Text style={styles.title}>GeoLocation Tracker</Text>
-            <Text style={styles.subtitle}>Axel Reginald Wiranto - 00000078456</Text>
+            <Text style={styles.subtitle}>Efri Ramadhan - 00000078662</Text>
           </View>
 
           <View style={styles.buttonGroup}>
