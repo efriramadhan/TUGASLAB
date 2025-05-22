@@ -63,7 +63,7 @@ export const PhotoHistoryScreen: React.FC = () => {
     if (loading) {
       return (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#007AFF" />
+          <ActivityIndicator size="large" color="#0077E0" />
         </View>
       );
     }
@@ -94,7 +94,8 @@ export const PhotoHistoryScreen: React.FC = () => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            colors={['#007AFF']}
+            colors={['#0077E0']}
+            progressBackgroundColor="#FFFFFF"
           />
         }
         ListEmptyComponent={renderEmptyState()}
@@ -115,10 +116,11 @@ export const PhotoHistoryScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#FFFFFF',
   },
   listContent: {
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     paddingBottom: 30,
     flexGrow: 1,
   },
@@ -130,15 +132,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#FFFFFF',
   },
   headerContainer: {
-    marginBottom: 16,
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    marginBottom: 20,
+    paddingBottom: 10,
+    alignItems: 'flex-start',
   },
   headerText: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
   },
 });

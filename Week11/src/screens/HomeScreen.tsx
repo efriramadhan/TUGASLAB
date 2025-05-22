@@ -85,8 +85,9 @@ export const HomeScreen: React.FC = () => {
     <TouchableOpacity
       style={styles.cameraButton}
       onPress={() => navigation.navigate('Camera')}
+      activeOpacity={0.7}
     >
-      <Ionicons name="camera" size={24} color="#fff" />
+      <Ionicons name="camera" size={28} color="#fff" />
     </TouchableOpacity>
   );
 
@@ -126,10 +127,11 @@ export const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#FFFFFF',
   },
   listContent: {
-    padding: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 16,
     paddingBottom: 80,
     flexGrow: 1,
   },
@@ -141,21 +143,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#FFFFFF',
   },
   cameraButton: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#007AFF',
+    bottom: 24,
+    right: 24,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#0077E0',
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.20,
+    shadowRadius: 6,
+    elevation: 6,
   },
 });

@@ -6,7 +6,8 @@ import {
   ActivityIndicator,
   Text,
   TouchableOpacity,
-  StatusBar
+  StatusBar,
+  Platform
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -18,6 +19,13 @@ import { CameraControls } from '../components/CameraControls';
 import { CameraView } from '../components/CameraView';
 import { uploadPhoto, savePhotoData } from '../services/supabase';
 import { getFileNameFromUri } from '../utils/formatters';
+import {
+  sendUploadSuccessNotification,
+  sendUploadFailureNotification,
+  sendSaveSuccessNotification,
+  sendSaveFailureNotification,
+  sendLocationCaptureNotification
+} from '../services/notifications';
 
 type CameraScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Camera'>;
 
@@ -46,7 +54,7 @@ export const CameraScreen: React.FC = () => {
     try {
       setIsCapturing(true);
 
-      // Jalankan pengambilan foto dan lokasi secara paralel
+
       const [photoUri, location] = await Promise.all([
         takePicture(),
         getCurrentLocation()
@@ -69,6 +77,8 @@ export const CameraScreen: React.FC = () => {
         );
         return;
       }
+
+      await sendLocationCaptureNotification(location);
 
       await savePhotoWithLocation(photoUri, location.latitude, location.longitude);
 
@@ -118,11 +128,15 @@ export const CameraScreen: React.FC = () => {
           url: dummyUrl
         };
 
+        await sendUploadFailureNotification(latitude, longitude);
+
         Alert.alert(
           'Peringatan',
-          'Foto berhasil diambil tetapi gagal diunggah ke server. Data lokasi tetap akan disimpan.',
+          `Foto berhasil diambil tetapi gagal diunggah ke server. Data lokasi tetap akan disimpan.\n\nLokasi:\nLatitude: ${latitude}\nLongitude: ${longitude}`,
           [{ text: 'OK' }]
         );
+      } else {
+        await sendUploadSuccessNotification(latitude, longitude, uploadResult.url);
       }
 
       const photoData: PhotoData = {
@@ -133,21 +147,27 @@ export const CameraScreen: React.FC = () => {
 
       const savedPhoto = await savePhotoData(photoData);
 
-      // Navigasi ke Home terlebih dahulu untuk mengurangi waktu tunggu
-      navigation.navigate('Home');
-
-      // Tampilkan alert setelah navigasi
       if (!savedPhoto) {
+        await sendSaveFailureNotification(latitude, longitude);
+
         Alert.alert(
           'Peringatan',
-          'Foto berhasil diambil tetapi gagal menyimpan data ke server.',
-          [{ text: 'OK' }]
+          `Foto berhasil diambil tetapi gagal menyimpan data ke server.\n\nLokasi:\nLatitude: ${latitude}\nLongitude: ${longitude}`,
+          [{
+            text: 'OK',
+            onPress: () => navigation.navigate('Home')
+          }]
         );
       } else {
+        await sendSaveSuccessNotification(latitude, longitude, savedPhoto.id || '');
+
         Alert.alert(
           'Sukses',
-          'Foto berhasil diambil dan disimpan.',
-          [{ text: 'OK' }]
+          `Foto berhasil diambil dan disimpan ke database.\n\nLokasi:\nLatitude: ${latitude}\nLongitude: ${longitude}`,
+          [{
+            text: 'OK',
+            onPress: () => navigation.navigate('Home')
+          }]
         );
       }
 
@@ -177,8 +197,8 @@ export const CameraScreen: React.FC = () => {
   if (hasPermission === null) {
     return (
       <View style={styles.permissionContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.permissionText}>Meminta izin kamera...</Text>
+        <ActivityIndicator size="large" color="#0077E0" />
+        <Text style={styles.permissionInfoText}>Meminta izin kamera...</Text>
       </View>
     );
   }
@@ -186,16 +206,16 @@ export const CameraScreen: React.FC = () => {
   if (hasPermission === false) {
     return (
       <View style={styles.permissionContainer}>
-        <Ionicons name="camera-outline" size={48} color="#FF3B30" />
+        <Ionicons name="lock-closed-outline" size={70} color="#FF6B6B" />
         <Text style={styles.permissionTitle}>Izin Kamera Ditolak</Text>
-        <Text style={styles.permissionText}>
-          Aplikasi memerlukan izin untuk mengakses kamera.
+        <Text style={styles.permissionInfoText}>
+          Aplikasi ini memerlukan izin untuk mengakses kamera Anda. Mohon aktifkan izin kamera di pengaturan perangkat.
         </Text>
         <TouchableOpacity
-          style={styles.permissionButton}
+          style={[styles.permissionButtonBase, styles.primaryButtonCompat]}
           onPress={() => navigation.goBack()}
         >
-          <Text style={styles.permissionButtonText}>Kembali</Text>
+          <Text style={styles.permissionButtonText}>Kembali ke Beranda</Text>
         </TouchableOpacity>
       </View>
     );
@@ -253,63 +273,88 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   topControls: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 20,
-    paddingTop: 40,
+    justifyContent: 'flex-start',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    paddingTop: Platform.OS === 'ios' ? 50 : 20,
   },
   closeButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   bottomControls: {
-    paddingBottom: 30,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 30,
+    alignItems: 'center',
   },
   savingContainer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 10,
   },
   savingText: {
     color: '#fff',
-    fontSize: 16,
-    marginTop: 10,
+    fontSize: 17,
+    marginTop: 12,
+    fontWeight: '500',
   },
   permissionContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 24,
+    backgroundColor: '#FFFFFF',
   },
   permissionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  permissionText: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#222',
+    marginTop: 20,
+    marginBottom: 10,
     textAlign: 'center',
+  },
+  permissionInfoText: {
+    fontSize: 17,
+    color: '#555',
+    textAlign: 'center',
+    lineHeight: 24,
+    marginBottom: 24,
     marginTop: 8,
   },
-  permissionButton: {
-    marginTop: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
+  permissionButtonBase: {
+    paddingVertical: 15,
+    paddingHorizontal: 24,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 180,
+    marginTop: 10,
+  },
+  primaryButtonCompat: {
+    backgroundColor: '#0077E0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3,
   },
   permissionButtonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#FFFFFF',
+    fontSize: 17,
     fontWeight: '600',
   },
 });

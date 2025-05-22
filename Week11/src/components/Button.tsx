@@ -86,26 +86,37 @@ export const Button: React.FC<ButtonProps> = ({
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingVertical: 15,
+    paddingHorizontal: 24,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 120,
+    minWidth: 130,
+    flexDirection: 'row',
   },
   primaryButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#0077E0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3,
   },
   secondaryButton: {
-    backgroundColor: '#F2F2F7',
-    borderWidth: 1,
-    borderColor: '#DCDCDC',
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: '#0077E0',
   },
   dangerButton: {
     backgroundColor: '#FF3B30',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3,
   },
   disabledButton: {
-    opacity: 0.5,
+    opacity: 0.6,
   },
   contentContainer: {
     flexDirection: 'row',
@@ -113,17 +124,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconContainer: {
-    marginRight: 8,
+    marginRight: 10,
   },
   text: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '600',
+    textAlign: 'center',
   },
   primaryText: {
     color: '#FFFFFF',
   },
   secondaryText: {
-    color: '#007AFF',
+    color: '#0077E0',
   },
   dangerText: {
     color: '#FFFFFF',

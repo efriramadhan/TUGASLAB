@@ -23,15 +23,31 @@ export const CameraControls: React.FC<CameraControlsProps> = ({
   flashMode,
   isCapturing = false,
 }) => {
+  const getFlashIconName = () => {
+    switch (flashMode) {
+      case 'on':
+        return 'flash';
+      case 'off':
+        return 'flash-off';
+      case 'auto':
+        return 'flash-outline';
+      case 'torch':
+        return 'flashlight';
+      default:
+        return 'flash-off';
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.controlButton}
         onPress={onToggleFlash}
+        disabled={isCapturing}
       >
         <Ionicons
-          name={flashMode === 'on' ? 'flash' : 'flash-off'}
-          size={28}
+          name={getFlashIconName()}
+          size={30}
           color="#fff"
         />
       </TouchableOpacity>
@@ -50,8 +66,9 @@ export const CameraControls: React.FC<CameraControlsProps> = ({
       <TouchableOpacity
         style={styles.controlButton}
         onPress={onFlipCamera}
+        disabled={isCapturing}
       >
-        <Ionicons name="camera-reverse" size={28} color="#fff" />
+        <Ionicons name="camera-reverse-outline" size={30} color="#fff" />
       </TouchableOpacity>
     </View>
   );
@@ -62,32 +79,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 20,
-    paddingBottom: 30,
+    width: '90%',
   },
   controlButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   captureButton: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 3,
+    borderWidth: 4,
     borderColor: '#fff',
   },
   captureInner: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     backgroundColor: '#fff',
   },
   capturingInner: {

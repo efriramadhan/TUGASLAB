@@ -19,6 +19,7 @@ import { Header } from '../components/Header';
 import { PhotoCard } from '../components/PhotoCard';
 import { Button } from '../components/Button';
 import { getPhotoById, deletePhoto } from '../services/supabase';
+import { sendDeleteSuccessNotification, sendDeleteFailureNotification } from '../services/notifications';
 
 type PhotoDetailRouteProp = RouteProp<RootStackParamList, 'PhotoDetail'>;
 type PhotoDetailNavigationProp = NativeStackNavigationProp<RootStackParamList, 'PhotoDetail'>;
@@ -65,14 +66,26 @@ export const PhotoDetailScreen: React.FC = () => {
     try {
       setDeleting(true);
 
-      const path = photo.photo_url.split('/').pop() || '';
+      const path = photo.photo_url;
 
       const success = await deletePhoto(photo.id, path);
 
       if (success) {
-        navigation.goBack();
+        await sendDeleteSuccessNotification(photo.latitude, photo.longitude);
+
+        Alert.alert(
+          'Sukses',
+          `Foto berhasil dihapus dari database dan storage.\n\nLokasi foto yang dihapus:\nLatitude: ${photo.latitude}\nLongitude: ${photo.longitude}`,
+          [{ text: 'OK', onPress: () => navigation.goBack() }]
+        );
       } else {
-        Alert.alert('Error', 'Gagal menghapus foto. Silakan coba lagi.');
+        await sendDeleteFailureNotification();
+
+        Alert.alert(
+          'Error',
+          'Gagal menghapus foto. Silakan coba lagi.',
+          [{ text: 'OK' }]
+        );
       }
     } catch (error) {
       Alert.alert('Error', 'Terjadi kesalahan saat menghapus foto.');
@@ -109,7 +122,7 @@ export const PhotoDetailScreen: React.FC = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" color="#0077E0" />
       </View>
     );
   }
@@ -119,7 +132,7 @@ export const PhotoDetailScreen: React.FC = () => {
       <View style={styles.container}>
         <Header title="Detail Foto" showBackButton />
         <View style={styles.errorContainer}>
-          <Ionicons name="alert-circle" size={48} color="#FF3B30" />
+          <Ionicons name="alert-circle-outline" size={60} color="#FF6B6B" />
           <Text style={styles.errorText}>Foto tidak ditemukan</Text>
           <Button
             title="Kembali"
@@ -137,8 +150,8 @@ export const PhotoDetailScreen: React.FC = () => {
         title="Detail Foto"
         showBackButton
         rightComponent={
-          <TouchableOpacity onPress={handleShare}>
-            <Ionicons name="share-outline" size={24} color="#007AFF" />
+          <TouchableOpacity onPress={handleShare} style={styles.headerButton}>
+            <Ionicons name="share-social-outline" size={28} color="#0077E0" />
           </TouchableOpacity>
         }
       />
@@ -170,7 +183,7 @@ export const PhotoDetailScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#FFFFFF',
   },
   scrollContent: {
     padding: 16,
@@ -180,27 +193,31 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
   actionsContainer: {
-    marginTop: 20,
+    marginTop: 24,
   },
   actionButton: {
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  headerButton: {
+    padding: 4,
   },
   errorContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: '#FFFFFF',
   },
   errorText: {
-    fontSize: 18,
-    color: '#333',
-    marginTop: 12,
-    marginBottom: 20,
+    fontSize: 20,
+    fontWeight: '500',
+    color: '#444',
+    marginTop: 16,
+    marginBottom: 24,
+    textAlign: 'center',
   },
   backButton: {
     marginTop: 10,

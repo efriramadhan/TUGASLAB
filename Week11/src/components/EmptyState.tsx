@@ -28,7 +28,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <View style={[styles.container, style]}>
       {icon || (
-        <Ionicons name="images-outline" size={80} color="#CCCCCC" />
+        <Ionicons name="images-outline" size={100} color="#A9A9A9" />
       )}
 
       <Text style={styles.title}>{title}</Text>
@@ -50,25 +50,25 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: 24,
   },
 
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-    marginTop: 16,
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#222',
+    marginBottom: 12,
+    marginTop: 24,
     textAlign: 'center',
   },
   message: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 17,
+    color: '#555',
     textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 22,
+    marginBottom: 32,
+    lineHeight: 24,
   },
   button: {
-    marginTop: 8,
+    marginTop: 16,
   },
 });
